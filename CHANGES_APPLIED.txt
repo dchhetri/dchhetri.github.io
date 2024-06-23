@@ -1,0 +1,41 @@
+1. Add Google Analytics snippet right after <head> in index.html
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JZM4MGDGYL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-JZM4MGDGYL');
+</script>
+
+2. To <form> add
+action="https://api.web3forms.com/submit"
+method="POST"
+
+3. Add hidden input
+<input
+  type="hidden"
+  name="access_key"
+  value="aa006aad-c8d7-4682-b98f-01c376af9d26"
+/>
+<input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+
+4. Change form error message to.
+<div class="u-form-send-error u-form-send-message u-form-send-message u-form-send-success">
+  Thank you for signing up!
+</div>
+
+5. Delete the "<div class="u-form-send-message u-form-send-success">" entry
+
+6. Repeat steps 2 to 4 for all <form>
+
+7. Change nicepage.css (add !important)
+.u-form-send-success {
+  background: #62C584 !important
+}
+
+8. In nicepage.css, in ".u-body " replace "background-color: #ffffff;" with "background-color: #black;"
+
+
