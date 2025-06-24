@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Georgia&display=swap"
+      rel="stylesheet"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Digital Butler</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, Arial, sans-serif;
+        margin: 0;
+        color: #ffffff;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      .tablet-frame {
+        border: 1px solid #3a3a3c;
+        border-radius: 40px;
+        padding: 18px;
+        padding-bottom: 0px;
+        position: relative;
+      }
+      .tablet {
+        padding: 6px;
+        background-clip: padding-box;
+        width: 40vw;
+        height: 80vw;
+        max-height: 90vh;
+        background: black;
+        border-radius: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        position: relative;
+      }
+      #page1.active {
+        cursor: pointer;
+      }
+      section {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        box-sizing: border-box;
+        transition: opacity 0.5s ease;
+      }
+      section.active {
+        display: flex;
+      }
+      h1,
+      h2 {
+        font-family: "Playfair Display", serif;
+        text-align: center;
+        color: #dddddd;
+        line-height: 1.5;
+      }
+      p {
+        font-family: "Georgia", serif;
+        font-size: 1.1rem;
+        color: #cccccc;
+        line-height: 1.6;
+        text-align: center;
+      }
+      .video-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        flex-grow: 1;
+      }
+      .video-bg {
+        width: 80%;
+        height: auto;
+        border-radius: 10px;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 1s ease-in;
+      }
+      .video-bg.visible {
+        opacity: 1;
+      }
+      .click-to-start {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #bbbbbb;
+        cursor: pointer;
+        text-align: center;
+        user-select: none;
+      }
+      #page1 {
+        padding: 4rem;
+      }
+      #page2 {
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+      }
+      button {
+        margin-top: 1rem;
+        padding: 0.8rem 1rem;
+        background: transparent;
+        border: 1px solid #2ecc71;
+        color: #2ecc71;
+        font-weight: 600;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      button:hover {
+        background-color: #2ecc71;
+        color: #fff;
+      }
+      #page2-video-wrapper {
+        width: 80%;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      #page2-video-wrapper video {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .orb-small {
+        width: 80px;
+        height: 80px;
+      }
+      .orb-icon {
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+      }
+      .dish-img {
+        width: 90%;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+      }
+      .icon-row {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      .icon-row span {
+        font-size: 0.9rem;
+        padding: 0.2rem 0.5rem;
+        font-family: "Georgia", serif;
+        border: 1px solid;
+        background: transparent;
+        border-radius: 999px;
+        border-color: #888;
+        font-size: 0.8rem;
+      }
+      .nutrition-facts {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+        font-size: 0.85rem;
+        color: #ddd;
+        font-family: "Georgia", serif;
+      }
+      .voice-description {
+        flex: 1;
+        font-family: "Georgia", serif;
+        font-size: 0.85rem;
+        color: #cccccc;
+        text-align: left;
+        line-height: 1.5;
+      }
+      .menu-section {
+        width: 100Hb;
+        height: 100%;
+        display_linked_list: flex;
+        flex-direction: column;
+        padding: 1rem;
+        overflow-y: auto;
+        gap: 10px;
+      }
+      .menu-section h2 {
+        margin-bottom: 0.5rem;
+        font-size: 2rem;
+        color: #fff;
+      }
+      .menu-categories {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+        flex: 1;
+      }
+      .menu-category {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #111;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        width: 100%;
+        padding: 1rem 0px;
+        padding-bottom: 2rem;
+        gap: 1rem;
+      }
+      .menu-category:hover {
+        background-color: #1a1a1a;
+      }
+      .menu-category video {
+        width: 90%;
+        border-radius: 8px;
+        max-height: 120px;
+        object-fit: cover;
+      }
+      .menu-category-title {
+        margin-top: 0.3rem;
+        font-size: 1.5rem;
+        color: #eee;
+        font-family: "Georgia", serif;
+        margin-bottom: 0.5rem;
+      }
+      .menu-footer {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+        padding: 0.5rem 0;
+        gap: 0.5rem;
+        z-index: 10;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(6px);
+        cursor: pointer;
+      }
+      .menu-footer:hover {
+        /* background-color: #1a1a1a; */
+      }
+      .menu-footer button {
+        background: transparent;
+        border: 0px;
+        color: white;
+        border-radius: 999px;
+        padding: 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        cursor: pointer;
+        margin-top: 0px;
+      }
+      .menu-footer button:hover {
+        background-color: #1a1a1a;
+        padding: 1rem;
+      }
+      .fade-in {
+        opacity: 0;
+        animation: fadeIn ease-in 0.8s forwards;
+      }
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      .top-nav {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid #333;
+        margin-bottom: 1rem;
+      }
+      .nav-title {
+        font-family: "Playfair Display", serif;
+        font-size: 1.1rem;
+        color: #ffffff;
+      }
+      .nav-icon {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        color: white;
+        cursor: pointer;
+        margin: 0px;
+      }
+      .nav-icon:hover {
+        background-color: #1a1a1a;
+      }
+      .voice-footer {
+        display: none;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        border-top: 1px solid #333;
+        align-items: center;
+        gap: 1rem;
+        z-index: 20;
+      }
+      .voice-footer video.orb-icon {
+        width: 50px;
+        height: 50px;
+      }
+      .voice-footer-text {
+        font-family: "Georgia", serif;
+        font-size: 0.9rem;
+        color: #ddd;
+        line-height: 1.4;
+        flex: 1;
+      }
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 100;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 40px;
+      }
+      .modal.active {
+        display: flex;
+        opacity: 1;
+      }
+      .modal-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        max-width: 600px;
+        width: 100%;
+        flex: 1;
+        margin-top: 40px;
+      }
+      .modal-orb {
+        width: 60px;
+      }
+      .modal-text {
+        font-family: "Georgia", serif;
+        font-size: 1rem;
+        color: #cccccc;
+        line-height: 1.6;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end; /* Align chat bubbles to the right */
+      }
+      .modal-text .chat-bubble {
+        background: #1abc9c;
+        color: #fff;
+        padding: 0.8rem 1.2rem;
+        border-radius: 20px 20px 0 20px;
+        max-width: 70%;
+        margin-bottom: 0.5rem;
+        animation: slideIn 0.3s ease;
+      }
+      @keyframes slideIn {
+        0% {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .modal-close {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin-top: 2rem;
+        margin-left: 2rem;
+        font-size: 1rem;
+        font-weight: normal;
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+      .modal-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .modal-footer {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        row-gap: 2rem;
+      }
+      .modal-footer-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        flex-direction: row;
+      }
+      .modal-footer input {
+        height: 60px;
+        width: 100%;
+        padding: 1rem;
+        border-radius: 40px;
+        background-color: #1abc9c;
+        pointer-events: none;
+      }
+      .modal-footer input::placeholder {
+        color: black;
+      }
+      .prototype-notes {
+        height: 50vw;
+        width: 400px;
+        margin-left: 5rem;
+        height: 50vw;
+        font-family: "Georgia", serif;
+        font-size: 1rem;
+        color: #cccccc;
+        line-height: 1.6;
+      }
+      .prototype-notes p {
+        text-align: left;
+      }
+      .prototype-notes strong {
+        font-size: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tablet-frame">
+      <div class="tablet" id="tablet">
+        <section id="page1" class="active">
+          <div class="top-content fade-in">
+            <h1>Hello, I’m Alfred — Your Digital Butler</h1>
+          </div>
+          <div class="video-wrapper">
+            <video
+              class="video-bg"
+              autoplay
+              loop
+              muted
+              playsinline
+              preload="auto"
+            >
+              <source src="./assets/orb1.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="bottom-content">
+            <div class="click-to-start">Tap anywhere to begin</div>
+          </div>
+        </section>
+        <section id="page2" class="fade-in">
+          <div id="page2-video-wrapper">
+            <video
+              autoplay
+              loop
+              muted
+              playsinline
+              preload="auto"
+              src="./assets/orb1.mp4"
+              type="video/mp4"
+            ></video>
+          </div>
+          <div class="fade-in">
+            <h1>
+              Welcome! Would you like to browse the menu or hear today’s
+              specials?
+            </h1>
+            <div
+              style="
+                display: flex;
+                width: 100%;
+                justify-content: center;
+                align-items: center;
+                gap: 1rem;
+              "
+            >
+              <button id="menu-btn">View Full Menu</button>
+              <button id="specials-btn">View Today's Specials</button>
+            </div>
+          </div>
+        </section>
+        <section id="page3" class="fade-in">
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              height: 100%;
+              width: 100%;
+            "
+          >
+            <div
+              style="
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                overflow-y: auto;
+              "
+            >
+              <video
+                class="dish-img"
+                autoplay
+                loop
+                muted
+                playsinline
+                preload="auto"
+                src="./assets/steak.mp4"
+                type="video/mp4"
+              ></video>
+              <h2>Charred Filet Mignon</h2>
+              <div class="icon-row">
+                <span>🌾 Gluten Free</span>
+                <span>🌱 Organic</span>
+                <span>❤️ Popular</span>
+              </div>
+              <div class="nutrition-facts">
+                <div>
+                  <strong>Calories</strong>
+                  <span>450 kcal</span>
+                </div>
+                <div>
+                  <strong>Protein</strong>
+                  <span>36g</span>
+                </div>
+                <div>
+                  <strong>Carbs</strong>
+                  <span>5g</span>
+                </div>
+              </div>
+              <p style="max-width: 700px; margin: 1rem auto">
+                Sourced from grass-fed cattle raised on sustainable U.S.
+                ranches, our filet mignon is the most tender cut of beef,
+                expertly prepared and charred in a cast iron skillet. Basted in
+                rosemary butter, garlic, and sea salt, it's served medium-rare
+                to preserve its velvety texture.
+              </p>
+              <div
+                style="
+                  display: flex;
+                  gap: 1rem;
+                  justify-content: center;
+                  margin-bottom: 1rem;
+                "
+              >
+                <button>Add to Cart</button>
+                <button id="menu-btn-page3">View Full Menu</button>
+              </div>
+            </div>
+            <div
+              style="display: flex; border-top: 1px solid #444; flex-basis: 15%"
+            >
+              <div>
+                <video
+                  class="orb-small"
+                  autoplay
+                  loop
+                  muted
+                  playsinline
+                  preload="auto"
+                  src="./assets/orb1.mp4"
+                  type="video/mp4"
+                ></video>
+                <p style="font-size: 0.8rem">Listening...</p>
+              </div>
+              <p class="voice-description"></p>
+            </div>
+          </div>
+        </section>
+        <section id="page4" class="fade-in">
+          <div class="top-nav">
+            <button class="nav-icon sidebar-icon">☰</button>
+            <span class="nav-title">Your Business Name</span>
+            <button class="nav-icon search-icon">🔍</button>
+          </div>
+          <div
+            style="
+              width: 100%;
+              display: flex;
+              flex-direction: column;
+              overflow: scroll;
+              padding-bottom: 2rem;
+            "
+          >
+            <div class="menu-categories">
+              <div class="menu-category">
+                <div class="menu-category-title">Today's Specials</div>
+                <img
+                  src="https://images.contentstack.io/v3/assets/bltcedd8dbd5891265b/blte6969358afa33e68/664cbdf0698270a03225eb18/lobster-recipes-hero.jpg?q=70&width=3840&auto=webp"
+                  alt="Breakfast"
+                  style="
+                    width: 90%;
+                    border-radius: 8px;
+                    max-height: 120px;
+                    object-fit: cover;
+                  "
+                />
+              </div>
+              <div class="menu-category">
+                <div class="menu-category-title">Breakfast</div>
+                <img
+                  src="https://media.istockphoto.com/id/1294939955/photo/valentines-or-mothers-day-breakfast-table-scene-on-a-dark-wood-background-with-heart-shaped.jpg?s=612x612&w=0&k=20&c=SGlRQunjMg0GV6aDr0bbnRYDXHbpHY15NXxGuv5vcH4="
+                  alt="Breakfast"
+                  style="
+                    width: 90%;
+                    border-radius: 8px;
+                    max-height: 120px;
+                    object-fit: cover;
+                  "
+                />
+              </div>
+              <div class="menu-category">
+                <div class="menu-category-title">Lunch</div>
+                <img
+                  src="https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bHVuY2h8ZW58MHx8MHx8fDA%3D"
+                  alt="Lunch"
+                  style="
+                    width: 90%;
+                    border-radius: 8px;
+                    max-height: 120px;
+                    object-fit: cover;
+                  "
+                />
+              </div>
+              <div class="menu-category">
+                <div class="menu-category-title">Dinner</div>
+                <img
+                  src="https://media.istockphoto.com/id/1402612822/photo/friends-having-a-barbecue-party.jpg?s=612x612&w=0&k=20&c=Tq0hEe7VQ2akvO9rkitKBpnitdNy9qkOZG06fcUJuMU="
+                  alt="Lunch"
+                  style="
+                    width: 90%;
+                    border-radius: 8px;
+                    max-height: 120px;
+                    object-fit: cover;
+                  "
+                />
+              </div>
+              <div class="menu-category">
+                <div class="menu-category-title">Cocktails</div>
+                <img
+                  src="https://t4.ftcdn.net/jpg/06/99/64/27/360_F_699642704_Es7Nj5ee15TBfE7NVzdZW3DKDa4xUtpe.jpg"
+                  alt="Lunch"
+                  style="
+                    width: 90%;
+                    border-radius: 8px;
+                    max-height: 120px;
+                    object-fit: cover;
+                  "
+                />
+              </div>
+              <div class="menu-category">
+                <div class="menu-category-title">Desserts</div>
+                <img
+                  src="https://img.freepik.com/premium-photo/dessert-with-raspberry-raspberry-cake-it_1086760-308010.jpg?w=360"
+                  alt="Lunch"
+                  style="
+                    width: 90%;
+                    border-radius: 8px;
+                    max-height: 120px;
+                    object-fit: cover;
+                  "
+                />
+              </div>
+            </div>
+          </div>
+          <div class="menu-footer">
+            <!-- <button>More Water</button> -->
+            <!-- <button>Call Waiter</button> -->
+            <video
+              class="orb-icon"
+              autoplay
+              loop
+              muted
+              playsinline
+              preload="auto"
+              src="./assets/orb1.mp4"
+              type="video/mp4"
+            ></video>
+            <span>Press here to speak to Alfred.</span>
+          </div>
+        </section>
+        <section id="page5" class="fade-in">
+          <div class="top-nav">
+            <button
+              class="nav-icon sidebar-icon"
+              style="font-weight: normal; font-size: 1rem"
+              id="page5-back-button"
+              onclick="showSection('page4')"
+            >
+              Back
+            </button>
+            <span class="nav-title">Menu Items</span>
+            <button
+              class="nav-icon search-icon"
+              style="pointer-events: none"
+            ></button>
+          </div>
+          <div style="overflow-y: auto; width: 100%; height: 100%">
+            <div style="display: flex; flex-direction: column; gap: 1rem">
+              <div
+                style="
+                  display: flex;
+                  gap: 1rem;
+                  align-items: center;
+                  background: #111;
+                  padding: 0.75rem 1rem;
+                  border-radius: 10px;
+                "
+              >
+                <img
+                  src="https://placehold.co/100x80"
+                  style="flex-shrink: 0; border-radius: 8px"
+                  alt="Dish"
+                />
+                <div style="flex: 1">
+                  <h3 style="margin: 0; font-size: 1rem; color: #eee">
+                    Spicy Garlic Noodles
+                  </h3>
+                  <p
+                    style="
+                      margin: 0.2rem 0;
+                      font-size: 0.85rem;
+                      color: #ccc;
+                      text-align: left;
+                    "
+                  >
+                    Bold, flavorful noodles tossed in a garlic chili sauce.
+                  </p>
+                </div>
+                <button style="padding: 0.5rem 1rem; font-size: 0.8rem">
+                  Add to Cart
+                </button>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  gap: 1rem;
+                  align-items: center;
+                  background: #111;
+                  padding: 0.75rem 1rem;
+                  border-radius: 10px;
+                "
+              >
+                <img
+                  src="https://placehold.co/100x80"
+                  style="flex-shrink: 0; border-radius: 8px"
+                  alt="Dish"
+                />
+                <div style="flex: 1">
+                  <h3 style="margin: 0; font-size: 1rem; color: #eee">
+                    Lemon Herb Chicken
+                  </h3>
+                  <p
+                    style="
+                      margin: 0.2rem 0;
+                      font-size: 0.85rem;
+                      color: #ccc;
+                      text-align: left;
+                    "
+                  >
+                    Grilled chicken marinated in lemon zest and garden herbs.
+                  </p>
+                </div>
+                <button style="padding: 0.5rem 1rem; font-size: 0.8rem">
+                  Add to Cart
+                </button>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  gap: 1rem;
+                  align-items: center;
+                  background: #111;
+                  padding: 0.75rem 1rem;
+                  border-radius: 10px;
+                "
+              >
+                <img
+                  src="https://placehold.co/100x80"
+                  style="flex-shrink: 0; border-radius: 8px"
+                  alt="Dish"
+                />
+                <div style="flex: 1">
+                  <h3 style="margin: 0; font-size: 1rem; color: #eee">
+                    Chocolate Lava Cake
+                  </h3>
+                  <p
+                    style="
+                      margin: 0.2rem 0;
+                      font-size: 0.85rem;
+                      color: #ccc;
+                      text-align: left;
+                    "
+                  >
+                    A rich chocolate cake with a molten center. Served warm.
+                  </p>
+                </div>
+                <button style="padding: 0.5rem 1rem; font-size: 0.8rem">
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="menu-footer">
+            <!-- <button>More Water</button> -->
+            <!-- <button>Call Waiter</button> -->
+            <video
+              class="orb-icon"
+              autoplay
+              loop
+              muted
+              playsinline
+              preload="auto"
+              src="./assets/orb1.mp4"
+              type="video/mp4"
+            ></video>
+            <span>Press here to speak to Alfred.</span>
+          </div>
+        </section>
+      </div>
+      <div class="voice-footer" id="voice-footer">
+        <video
+          class="orb-icon"
+          autoplay
+          loop
+          muted
+          playsinline
+          preload="auto"
+          src="./assets/orb1.mp4"
+          type="video/mp4"
+        ></video>
+        <div class="voice-footer-text">
+          Hey, I’m Alfred! How can I assist you today? You can ask me to call a
+          waiter, tell you more about a dish, or even suggest something based on
+          your taste.
+        </div>
+      </div>
+      <!-- Modal for orb interaction -->
+      <div class="modal" id="orb-modal">
+        <div style="display: flex">
+          <button class="modal-close">Close</button>
+          <video
+            class="modal-orb"
+            autoplay
+            loop
+            muted
+            playsinline
+            preload="auto"
+            src="./assets/orb1.mp4"
+            type="video/mp4"
+          ></video>
+        </div>
+        <div class="modal-content">
+          <div class="modal-text" id="modal-text">
+            <div class="chat-bubble"></div>
+            <div
+              style="position: absolute; top: 50%; left: 40%; color: lightblue"
+            >
+              Listening...
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="modal-footer-buttons">
+            <button>Mute</button>
+            <button>Call Waiter</button>
+            <button>More Water</button>
+          </div>
+          <input placeholder="Demo Mode. A.I Not Enabled" type="text" />
+        </div>
+      </div>
+    </div>
+    <div class="prototype-notes">
+      <strong>Prototype Demo Notice</strong><br />
+      <p>This is a prototype demonstration of the Digital Butler interface.</p>
+      <p>
+        The full application will be more comprehensive, featuring an advanced
+        A.I. voice assistant, Alfred, that guides users through the menu,
+        provides personalized recommendations, and answers any questions to
+        enhance the dining experience.
+      </p>
+      <button onclick="window.location.href='index.html'">
+        ← Back to Home
+      </button>
+      <button onclick="window.location.reload()" style="margin-left: 2rem">
+        Restart Experience
+      </button>
+    </div>
+
+    <script>
+      const sections = document.querySelectorAll("section");
+      const tablet = document.getElementById("tablet");
+      const specialsBtn = document.getElementById("specials-btn");
+      const video = document.querySelector(".video-bg");
+
+      function showSection(id) {
+        sections.forEach((section) => {
+          section.classList.remove("active");
+        });
+        const next = document.getElementById(id);
+        if (next) next.classList.add("active");
+
+        if (id === "page1" && video) {
+          setTimeout(() => video.classList.add("visible"), 100);
+        }
+      }
+
+      tablet.addEventListener("click", () => {
+        const page1 = document.getElementById("page1");
+        if (page1.classList.contains("active")) {
+          showSection("page2");
+        }
+      });
+
+      document.getElementById("menu-btn").addEventListener("click", () => {
+        showSection("page4");
+      });
+
+      document
+        .getElementById("menu-btn-page3")
+        .addEventListener("click", () => {
+          showSection("page4");
+        });
+
+      specialsBtn.addEventListener("click", () => {
+        showSection("page3");
+        setTimeout(typeText, 700);
+      });
+
+      const voiceEl = document.querySelector(".voice-description");
+      const fullText =
+        "Our Charred Filet Mignon is a cut above. Raised on pristine pastures, it's melt-in-your-mouth tender. Each steak is seared with care, locking in juices and infused with fresh rosemary and roasted garlic. Thank you for hearing our specials — would you like to now see our full menu or do you have any questions about this dish?";
+      voiceEl.innerText = "";
+      let charIndex = 0;
+      const typingSpeed = 30;
+
+      function typeText() {
+        if (charIndex < fullText.length) {
+          voiceEl.textContent += fullText.charAt(charIndex);
+          charIndex++;
+          setTimeout(typeText, typingSpeed);
+        }
+      }
+
+      const menuCategories = document.querySelectorAll(".menu-category");
+      menuCategories.forEach((category) => {
+        category.addEventListener("click", () => {
+          showSection("page5");
+        });
+      });
+
+      const orbIcons = document.querySelectorAll(".menu-footer");
+      const voiceFooter = document.getElementById("voice-footer");
+      const modal = document.getElementById("orb-modal");
+      const modalText = document.querySelector(".modal-text .chat-bubble");
+      const modalClose = document.querySelector(".modal-close");
+
+      const modalMessage =
+        "Good evening! I’m Alfred, your digital butler. 👋 I’m here to make your dining experience effortless—whether you’d like recommendations, details on any dish, or to call a waiter. How may I assist you today?";
+      let modalCharIndex = 0;
+
+      function typeModalText() {
+        if (modalCharIndex < modalMessage.length) {
+          modalText.textContent += modalMessage.charAt(modalCharIndex);
+          modalCharIndex++;
+          setTimeout(typeModalText, typingSpeed);
+        }
+      }
+
+      orbIcons.forEach((orb) => {
+        orb.addEventListener("click", (e) => {
+          e.stopPropagation();
+          modal.classList.add("active");
+          voiceFooter.style.display = "none";
+          modalText.textContent = "";
+          modalCharIndex = 0;
+          setTimeout(typeModalText, 100);
+        });
+      });
+
+      modalClose.addEventListener("click", () => {
+        modal.classList.remove("active");
+      });
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.classList.remove("active");
+        }
+      });
+
+      document.addEventListener("click", (e) => {
+        if (
+          !voiceFooter.contains(e.target) &&
+          !e.target.classList.contains("orb-icon") &&
+          !modal.contains(e.target)
+        ) {
+          voiceFooter.style.display = "none";
+        }
+      });
+
+      window.addEventListener("DOMContentLoaded", () => {
+        if (document.getElementById("page1").classList.contains("active")) {
+          video.classList.add("visible");
+        }
+      });
+    </script>
+  </body>
+</html>
