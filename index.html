@@ -168,17 +168,58 @@
         color: #111;
       }
 
+      .nav-right {
+        display: flex;
+        gap: 20px;
+      }
+
       .nav-right a {
-        margin-left: 25px;
         text-decoration: none;
         color: #111;
         font-weight: 500;
         transition: color 0.3s;
-        font-weight: bold;
       }
 
       .nav-right a:hover {
-        color: lightblue;
+        color: #555;
+      }
+
+      .nav-toggle {
+        display: none;
+        font-size: 1.8em;
+        cursor: pointer;
+      }
+
+      /* Mobile Styles */
+      @media (max-width: 768px) {
+        a[href="./butler.html"] {
+          display: none !important;
+        }
+        .nav-toggle {
+          display: block;
+        }
+
+        .nav-right {
+          position: absolute;
+          top: 70px;
+          right: 0;
+          background-color: #ffffff;
+          flex-direction: column;
+          align-items: flex-start;
+          width: 100%;
+          display: none;
+          padding: 20px;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-right a {
+          padding: 10px 0;
+          width: 100%;
+        }
+
+        .nav-right.open {
+          display: flex;
+        }
       }
     </style>
   </head>
@@ -187,16 +228,17 @@
       <div class="nav-left">
         <strong>Alfred</strong>
       </div>
-      <div class="nav-right">
-        <a href="./butler.html">View Demo Experience</a>
+      <div class="nav-toggle" onclick="toggleNav()">☰</div>
+      <div class="nav-right" id="nav-menu">
+        <a href="./butler.html" onclick="toggleNav()">View Demo Experience</a>
         <a
           href="#"
-          onclick="document.getElementById('waitlist-modal').style.display='block'"
+          onclick="document.getElementById('waitlist-modal').style.display='block'; toggleNav()"
           >Join the Waitlist</a
         >
         <a
           href="#"
-          onclick="document.getElementById('waitlist-modal').style.display='block'"
+          onclick="document.getElementById('waitlist-modal').style.display='block'; toggleNav()"
           >Contact Us</a
         >
       </div>
@@ -429,6 +471,10 @@
 
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
+      function toggleNav() {
+        const nav = document.getElementById("nav-menu");
+        nav.classList.toggle("open");
+      }
     </script>
   </body>
 </html>
